@@ -1,0 +1,43 @@
+import os
+import sys
+import json
+import math
+import glob
+
+def clip(lo, x, hi):
+    return max(lo, min(hi, x))
+
+def getEntropyBits(prob):
+    return int(-math.log(prob,2)*32768+0.5 )
+
+def checkForName(filename, searchData):
+    
+    for data in searchData:
+        if data in filename:
+            return data
+    print("Error: couldn't find data in filename: {0:s}".format(filename))
+    print(searchData)
+    sys.exit(-1)
+
+def getAllFiles( folder, ftype="", m="" ):
+    file_filt = ""
+    if m != "":
+        file_filt = "*" + m
+    file_filt = file_filt + "*." + ftype
+    files = glob.glob( os.path.join( folder, file_filt ) )
+    if len( files ) == 0:
+        print( "Could not find any {0:s} files.".format(file_filt) )
+        sys.exit(-1)
+    return files
+
+def checkIfIn(key, sort):
+    if key not in sort:
+        sort[key] = dict()
+    return sort
+
+def readJSON(file_path):
+    
+    jF = None
+    with open( os.path.join( file_path ), "rb" ) as f:
+        jF = json.load(f)
+    return jF
